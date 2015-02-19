@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="groceryList">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The Best Grocery List in The World</title>
+    <script type="text/javascript">
+      function alertShow() {
+          $(".alert").removeClass("in").show();
+        $(".alert").delay(2000).addClass("in").fadeOut(200);
+      };
+    </script>
+    <!-- Bootstrap -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="css/custom.css">
+  </head>
+  <body ng-controller="mainCtrl">
+    <div class="container margin-top-25" >
+
+      <ul class="nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#artikel">Artikel</a></li>
+        <li><a data-toggle="tab" href="#kategorien">Kategorien</a></li>
+      </ul>
+      <div class="content margin-top-25 tab-content">
+        <div id="artikel" class="tab-pane fade in active" ng-model="mainModel.items"> 
+           <!-- Items --> 
+          <div class="artikel-item" ng-repeat="item in items track by $index">
+            <span> {{$index + 1}}. {{item.Name}} </span>
+            <a class="glyphicon glyphicon-remove navbar-right" aria-hidden="true" ng-click="delete(1, item.id)"></a>
+            <span class="label {{item.Label}} padding-left-5 navbar-right pointer" data-toggle="modal" data-target="#{{item.id}}">{{item.Category}}</span>
+            <div class="modal fade bs-example-modal-sm" id="{{item.id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm">
+                <h2 class="white">Choose Category:</h2>
+                <div ng-repeat="category in categories track by $index">
+                  <h3><span class="label {{category.label}} margin-left-5 pointer" data-dismiss="modal"  ng-click="setCategory(category, category.label, item.id)"> {{category.category}}</span></h3>
+                </div>
+                <h4 ng-if="categories.length == 0" class="white">No Categories</h4>
+              </div>
+            </div>
+          </div>
+          <!-- Item Input Form -->
+          <form name="newItem" ng-submit="createItem()" autocomplete="off">
+            <div class="input-group margin-top-25">
+              <input name="newItem" type="text" class="form-control" placeholder="Type in a new item" ng-model="newItem.Name">
+              <div class="input-group-btn">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Add!</button>
+                </span>
+              </div>
+            </div>
+         </form>
+        </div>
+        <!-- Categories -->
+        <div id="kategorien" class="tab-pane fade" ng-model="mainCtrl.categories" >
+          <div class="category" ng-repeat="category in categories track by $index">
+              <span class="label {{category.label}}" ng-click="getItemsInCategories(category.category)" data-toggle="modal" data-target="#{{category.id}}">{{category.category}}</span>
+              <a class="glyphicon glyphicon-remove navbar-right" aria-hidden="true" ng-click="delete(2, category.id)"></a>
+            <div class="modal fade bs-example-modal-sm" id="{{category.id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-sm">
+                <h2 class="white">In Category {{category.category}}:</h2>
+                <div>
+                  <div ng-repeat="item in filteredItems track by $index">
+                    <h4 class="white"> {{item.Name}} </h4>
+                  </div>
+                  <h4 ng-if="filteredItems.length == 0" class="white">No items</h4>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Category Input Form -->
+          <form name="newCategory" ng-submit="createCategory()" autocomplete="off">
+            <div class="input-group margin-top-25">
+              <input name="newCategory.category" type="text" class="form-control" placeholder="Type in a category name" ng-model="newCategory.category">
+              <div class="input-group-btn">
+                <span class="input-group-btn">
+                  <button class="btn btn-default" type="submit">Add!</button>
+                </span>
+              </div>
+            </div>
+         <div class="margin-left-5">
+          Select Label: <a href="#" ng-repeat="label in labels" ng-click="setLabel($index)"><span class="label {{label}} margin-left-5">Label {{$index + 1}}</span></a>
+        </div>
+        </form>
+        <div id="dublicateAlert">
+          <div class="span4 pull-right">
+            <div class="alert alert-danger fade">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              <strong>Error!</strong> Dublicate Category!
+            </div>
+          </div>
+        </div>        
+      </div>
+    </div>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.13/angular.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/angular-local-storage.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/controllers.js"></script>
+
+  </body>
+</html>
